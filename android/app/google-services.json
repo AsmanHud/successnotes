@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "681856615220",
+    "project_id": "successnotes-4",
+    "storage_bucket": "successnotes-4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:681856615220:android:147ff1230d9d06fcd75b61",
+        "android_client_info": {
+          "package_name": "com.saki.successnotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXqKmE6DRWh3HJvPWhYVO1EZmOjp5zIrk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
