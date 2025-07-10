@@ -16,9 +16,19 @@ class FirebaseCloudStorage {
       );
 
   // C in CRUD
-  void createNewNote({required String ownerUserId}) async {
+  Future<CloudNote> createNewNote({required String ownerUserId}) async {
     try {
-      await notes.add({ownerUserIdFieldName: ownerUserId, textFieldName: ''});
+      const text = '';
+      final document = await notes.add({
+        ownerUserIdFieldName: ownerUserId,
+        textFieldName: text,
+      });
+      final fetchedNote = await document.get();
+      return CloudNote(
+        documentId: fetchedNote.id,
+        ownerUserId: ownerUserId,
+        text: text,
+      );
     } catch (e) {
       throw CouldNotCreateNoteException();
     }
@@ -30,11 +40,9 @@ class FirebaseCloudStorage {
       return await notes
           .where(ownerUserIdFieldName, isEqualTo: ownerUserId)
           .get()
-          .then((value) {
-            return value.docs.map((doc) {
-              return CloudNote.fromSnapshot(doc);
-            });
-          });
+          .then(
+            (value) => value.docs.map((doc) => CloudNote.fromSnapshot(doc)),
+          );
     } catch (e) {
       throw CouldNotGetAllNotesException();
     }
