@@ -4,6 +4,7 @@ import 'package:successnotes/constants/routes.dart';
 import 'package:successnotes/services/auth/auth_exceptions.dart';
 import 'package:successnotes/services/auth/bloc/auth_bloc.dart';
 import 'package:successnotes/services/auth/bloc/auth_event.dart';
+import 'package:successnotes/services/auth/bloc/auth_state.dart';
 import 'package:successnotes/utilities/dialogs/error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -55,23 +56,24 @@ class _LoginViewState extends State<LoginView> {
               hintText: "Enter your password here",
             ),
           ),
-          TextButton(
-            onPressed: () async {
-              final email = _email.text;
-              final password = _password.text;
-              try {
-                context.read<AuthBloc>().add(AuthEventLogIn(email, password));
-              } on InvalidCredentialsAuthException {
-                if (context.mounted) {
-                  await showErrorDialog(context, 'Invalid Credentials');
-                }
-              } on GenericAuthException {
-                if (context.mounted) {
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) async {
+              if (state is AuthStateLoggedOut) {
+                if (state.exception is InvalidCredentialsAuthException) {
+                  await showErrorDialog(context, 'Wrong credentials');
+                } else if (state.exception is GenericAuthException) {
                   await showErrorDialog(context, 'Authentication error');
                 }
               }
             },
-            child: const Text("Login"),
+            child: TextButton(
+              onPressed: () {
+                final email = _email.text;
+                final password = _password.text;
+                context.read<AuthBloc>().add(AuthEventLogIn(email, password));
+              },
+              child: const Text("Login"),
+            ),
           ),
           TextButton(
             onPressed: () {
