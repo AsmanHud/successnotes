@@ -6,6 +6,7 @@ import 'package:successnotes/services/auth/bloc/auth_bloc.dart';
 import 'package:successnotes/services/auth/bloc/auth_event.dart';
 import 'package:successnotes/services/auth/bloc/auth_state.dart';
 import 'package:successnotes/services/auth/firebase_auth_provider.dart';
+import 'package:successnotes/views/forgor_password_view.dart';
 import 'package:successnotes/views/login_view.dart';
 import 'package:successnotes/views/notes/create_update_note_view.dart';
 import 'package:successnotes/views/notes/notes_view.dart';
@@ -14,11 +15,16 @@ import 'package:successnotes/views/verify_email_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  final colorScheme = ColorScheme.fromSeed(seedColor: Colors.blue);
   runApp(
     MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: colorScheme,
+        appBarTheme: AppBarTheme(
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+        ),
       ),
       home: BlocProvider<AuthBloc>(
         create: (context) => AuthBloc(FirebaseAuthProvider()),
@@ -54,6 +60,8 @@ class HomePage extends StatelessWidget {
           return const LoginView();
         } else if (state is AuthStateRegistering) {
           return const RegisterView();
+        } else if (state is AuthStateForgorPassword) {
+          return const ForgorPasswordView();
         } else {
           return const Scaffold(body: CircularProgressIndicator());
         }

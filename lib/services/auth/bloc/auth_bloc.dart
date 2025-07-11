@@ -6,6 +6,41 @@ import 'package:successnotes/services/auth/bloc/auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(AuthProvider provider)
     : super(const AuthStateUninitialized(isLoading: true)) {
+    // register view
+    on<AuthEventShouldRegister>((event, emit) {
+      emit(const AuthStateRegistering(isLoading: false));
+    });
+
+    // forgor password
+    on<AuthEventForgorPassword>((event, emit) async {
+      emit(
+        const AuthStateForgorPassword(isLoading: false, hasSentEmail: false),
+      );
+      final email = event.email;
+      // if email is null then user just wants to go to forgor-pwrd screen
+      if (email == null) return;
+
+      // user wants to actually send a forgor-pwrd email
+      emit(
+        const AuthStateForgorPassword(isLoading: false, hasSentEmail: false),
+      );
+
+      try {
+        await provider.sendPasswordReset(email: email);
+        emit(
+          const AuthStateForgorPassword(isLoading: false, hasSentEmail: true),
+        );
+      } on Exception catch (e) {
+        emit(
+          AuthStateForgorPassword(
+            isLoading: false,
+            hasSentEmail: false,
+            exception: e,
+          ),
+        );
+      }
+    });
+
     // send email verification
     on<AuthEventSendEmailVerification>((event, emit) async {
       await provider.sendEmailVerification();
